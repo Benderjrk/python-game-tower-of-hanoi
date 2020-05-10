@@ -49,11 +49,15 @@ class Stack:
       pointer = pointer.get_next_node()
     print_list.reverse()
     print("{0} Stack: {1}".format(self.get_name(), print_list))
-
+##
+##
+## This is the game
+##
+##
 print(
   """
-  Welcome to the Tower of Hanoi!!
-  Have fun!!
+Welcome to the Tower of Hanoi!!
+Have fun!!
   """
 )
 ##
@@ -67,8 +71,8 @@ left_stack = Stack("Left")
 middle_stack = Stack("Middle")
 right_stack = Stack("Right")
 stacks.append(left_stack)
-stacks.append(right_stack)
 stacks.append(middle_stack)
+stacks.append(right_stack)
 
 # Set up the Game
 
@@ -89,27 +93,7 @@ def create_disks(num):
     left_stack.push(i)
 def optimal_moves(num):
   return 2 ** num - 1
-##
-##
-## User Input Functions
-##
-##
-def get_input():
-  choices = [name.get_name()[0] for name in stacks]
-  while True:
-    for i in range(len(stacks)):
-      name = stacks[i].get_name()
-      letter = choices[i]
-      print("Enter {letter} for {name}".format(letter=letter, name=name))
-# user_direction = input("\nMust move L: Left, R: Right, or M: Middle\n")
-    user_input = input("")
-    direction = user_input.upper()
-    if direction in choices:
-      for i in range(len(stacks)):
-        if direction == choices[i]:
-          return stacks[i]
-
-    
+  
 ##
 ##
 ## Setup Up Game
@@ -126,9 +110,54 @@ print(lowest_moves_string)
 
 ##
 ##
-## Getting User Inputs While Playing
+## Getting User Inputs While Playing Function
 ##
 ##
-get_input()
-        
-#Play the Game
+def get_input():
+  choices = [name.get_name()[0] for name in stacks]
+  while True:
+    
+    for i in range(len(stacks)):
+      name = stacks[i].get_name()
+      letter = choices[i]
+      print("Enter {letter} for {name}".format(letter=letter, name=name))
+    user_input = input("")
+    direction = user_input.upper()
+
+    if direction in choices:
+
+      for i in range(len(stacks)):
+
+        if direction == choices[i]:
+          return stacks[i]
+
+##
+##
+## Playing Game
+##
+##
+num_user_moves = 0
+
+# Initiate Game
+while (right_stack.get_size() != number_of_disks):
+  print("\n...Current Stacks...")
+  for stack in stacks:
+    stack.print_items()
+  while True:
+    print("\nWhich stack do you want to move from?\n")
+    from_stack = get_input()
+    if from_stack.is_empty():
+      print("\nInvalid Move. Try Again")
+    else:
+      print("\nWhich stack do you want to move to?\n")
+      to_stack = get_input()
+      if to_stack.is_empty() or (from_stack.peek() < to_stack.peek()):
+        disk = from_stack.pop()
+        to_stack.push(disk)
+        ++num_user_moves
+      else:
+        print("\n\nInvalid Move. Try Again")
+    break
+
+you_win = "\n\nYou completed the game in {user_moves} moves, and the optimal number of moves is {optimal_moves}".format(user_moves=num_user_moves, optimal_moves=optimal_moves(number_of_disks))
+print(you_win)
