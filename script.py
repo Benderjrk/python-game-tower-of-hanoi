@@ -1,5 +1,54 @@
-from stack import Stack
-import numbers
+from node import Node
+
+class Stack:
+  def __init__(self, name):
+    self.size = 0
+    self.top_item = None
+    self.limit = 1000
+    self.name = name
+  
+  def push(self, value):
+    if self.has_space():
+      item = Node(value)
+      item.set_next_node(self.top_item)
+      self.top_item = item
+      self.size += 1
+    else:
+      print("No more room!")
+
+  def pop(self):
+    if self.size > 0:
+      item_to_remove = self.top_item
+      self.top_item = item_to_remove.get_next_node()
+      self.size -= 1
+      return item_to_remove.get_value()
+    print("This stack is totally empty.")
+
+  def peek(self):
+    if self.size > 0:
+      return self.top_item.get_value()
+    print("Nothing to see here!")
+
+  def has_space(self):
+    return self.limit > self.size
+
+  def is_empty(self):
+    return self.size == 0
+  
+  def get_size(self):
+    return self.size
+  
+  def get_name(self):
+    return self.name
+  
+  def print_items(self):
+    pointer = self.top_item
+    print_list = []
+    while(pointer):
+      print_list.append(pointer.get_value())
+      pointer = pointer.get_next_node()
+    print_list.reverse()
+    print("{0} Stack: {1}".format(self.get_name(), print_list))
 
 print(
   """
@@ -7,7 +56,11 @@ print(
   Have fun!!
   """
 )
-
+##
+##
+## Setup Game Funtions
+##
+##
 #Create the Stacks
 stacks = []
 left_stack = Stack("Left")
@@ -17,7 +70,7 @@ stacks.append(left_stack)
 stacks.append(right_stack)
 stacks.append(middle_stack)
 
-#Set up the Game
+# Set up the Game
 
 # Setting Up Disk Amount Function
 def enter_disk_amount(number=0):
@@ -34,14 +87,48 @@ def enter_disk_amount(number=0):
 def create_disks(num):
   for i in range(num, 0, -1):
     left_stack.push(i)
+def optimal_moves(num):
+  return 2 ** num - 1
+##
+##
+## User Input Functions
+##
+##
+def get_input():
+  choices = [name.get_name()[0] for name in stacks]
+  while True:
+    for i in range(len(stacks)):
+      name = stacks[i].get_name()
+      letter = choices[i]
+      print("Enter {letter} for {name}".format(letter=letter, name=name))
+# user_direction = input("\nMust move L: Left, R: Right, or M: Middle\n")
+    user_input = input("")
+    direction = user_input.upper()
+    if direction in choices:
+      for i in range(len(stacks)):
+        if direction == choices[i]:
+          return stacks[i]
 
-
+    
+##
+##
+## Setup Up Game
+##
+##
 # Setting Disk Amount
 number_of_disks = enter_disk_amount()
-
 create_disks(number_of_disks)
-print("Stack Size" ,left_stack.get_size())
-#Get User Input
 
+lowest_moves_string = "The fastest you can solve this game is in {move_number} moves\n".format(move_number=optimal_moves(number_of_disks))
+
+print("\nYour stack size is:" ,left_stack.get_size())
+print(lowest_moves_string)
+
+##
+##
+## Getting User Inputs While Playing
+##
+##
+get_input()
         
 #Play the Game
